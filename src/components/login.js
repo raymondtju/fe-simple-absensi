@@ -3,7 +3,7 @@ import ReactTypingEffect from "react-typing-effect";
 function Login({ title, description }) {
   return (
     <div className="container mx-auto">
-      <div className="flex justify-center">
+      <div className="flex justify-center text-3xl">
         <ReactTypingEffect
           text={[title, description]}
           eraseDelay={800}
