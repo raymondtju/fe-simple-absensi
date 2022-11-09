@@ -1,6 +1,6 @@
-function Home({title}) {
+const Home = () => {
     return (
-        <h1 className="text-lg">{title}</h1>
+        <h1 className="text-lg">HOME</h1>
     )
 }
 

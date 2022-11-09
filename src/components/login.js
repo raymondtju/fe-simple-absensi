@@ -1,9 +1,54 @@
 import ReactTypingEffect from "react-typing-effect";
+import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function Login({ title, description }) {
+    useEffect(() => {
+        if (localStorage.getItem("nip") && localStorage.getItem("nama")){
+            console.log ("You've already login !")
+            window.location.replace("/dashboard")
+        }
+    })
+
+  const [NIP, setNIP] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleNIP = (inputNIP) => {
+    setNIP(inputNIP);
+  };
+
+  const handlePass = (inputPass) => {
+    setPassword(inputPass);
+  };
+
+  const handleSubmit = event => { // prevent the page from reload after pressing submit button
+    event.preventDefault();
+  };
+
+  const userLogin = () => {
+    const requestData = {
+      nip: NIP,
+      password: password,
+    };
+    // console.log("Ready to login !");
+    // console.log("nip :", NIP);
+    // console.log("Password: ", password);
+
+    axios({
+      method: "POST",
+      url: "http://localhost:3333/users/login",
+      data: requestData,
+    }).then((result) => {
+        localStorage.setItem("nip", result.data.users.nip)
+        localStorage.setItem("nama", result.data.users.nama)
+        window.location.replace("/dashboard")
+    })
+  };
+
   return (
     <div className="container mx-auto">
-      <div className="flex justify-center text-3xl">
+      <div className="flex justify-center my-5 text-3xl font-bold">
         <ReactTypingEffect
           text={[title, description]}
           eraseDelay={800}
@@ -13,24 +58,37 @@ function Login({ title, description }) {
         />
       </div>
       <div className="my-5">
-        <form className="mx-auto w-3/12">
+        <form className="mx-auto md:w-3/12 sm:w-10/12" onSubmit={handleSubmit}>
           <label className="block">
-            <span className="block text-sm font-medium text-slate-700">NIP</span>
+            <span className="block text-sm font-bold text-slate-700">NIP</span>
             <input
-              type="text"
+              type="number"
               placeholder="masukkan nip"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400"
+              defaultValue=""
+              className="block w-full px-3 py-2 mt-1 text-sm bg-white border rounded-md shadow-sm border-slate-300 placeholder-slate-400"
+              required
+              onChange={(event) => handleNIP(event.target.value)}
             />
           </label>
           <label className="block mt-1">
-            <span className="block text-sm font-medium text-slate-700">Password</span>
+            <span className="block text-sm font-bold text-slate-700">
+              Password
+            </span>
             <input
               type="password"
               placeholder="masukkan password"
-              className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400"
+              defaultValue=""
+              className="block w-full px-3 py-2 mt-1 text-sm bg-white border rounded-md shadow-sm border-slate-300 placeholder-slate-400"
+              required
+              onChange={(event) => handlePass(event.target.value)}
             />
           </label>
-          <button className="bg-slate-700 text-white py-2 px-3 w-full rounded-lg shadow-sm mt-2">Login Now</button>
+          <button
+            className="w-full px-3 py-2 mt-2 text-white rounded-lg shadow-sm bg-slate-700"
+            onClick={() => userLogin()}
+          >
+            Login Now
+          </button>
         </form>
       </div>
     </div>
